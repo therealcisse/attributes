@@ -113,12 +113,13 @@ object ImmutableKeyValuePairs {
     ord: Ordering[K]
   ): Unit = {
     if (endIndex - beginIndex <= 2) {
-      return
+    } else {
+      val midpoint = ((endIndex + beginIndex) / 4) * 2
+      splitAndMerge(targetArray, beginIndex, midpoint, workArray, ord)
+      splitAndMerge(targetArray, midpoint, endIndex, workArray, ord)
+      merge(workArray, beginIndex, midpoint, endIndex, targetArray, ord)
+
     }
-    val midpoint = ((endIndex + beginIndex) / 4) * 2
-    splitAndMerge(targetArray, beginIndex, midpoint, workArray, ord)
-    splitAndMerge(targetArray, midpoint, endIndex, workArray, ord)
-    merge(workArray, beginIndex, midpoint, endIndex, targetArray, ord)
   }
 
   private def merge[K](
