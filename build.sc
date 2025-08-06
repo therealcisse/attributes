@@ -10,6 +10,14 @@ object attributes extends ScalaModule with PublishModule {
     ivy"dev.zio::zio-schema-protobuf:1.7.4"
   )
 
+  object test extends ScalaTests with TestModule.ZioTest {
+    def ivyDeps = Agg(
+      ivy"dev.zio::zio-test:2.0.21",
+      ivy"dev.zio::zio-test-sbt:2.0.21",
+      ivy"dev.zio::zio-test-magnolia:2.0.21"
+    )
+  }
+
   def publishVersion = "0.1.0"
 
   def pomSettings = PomSettings(

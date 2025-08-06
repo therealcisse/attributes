@@ -25,7 +25,7 @@ object Attributes {
       System.arraycopy(data, 0, newData, 0, data.length)
       newData(data.length) = attributeKey
       newData(data.length + 1) = value
-      new AttributesImpl(data)
+      new AttributesImpl(newData)
     }
 
   }
