@@ -1,0 +1,21 @@
+# Mill specific
+out/
+
+# Metals / Scala IDE
+.metals/
+.bloop/
+.ammonite/
+project/metals.sbt
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# IDE specific
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
