@@ -6,10 +6,12 @@ out/
 .bloop/
 .ammonite/
 project/metals.sbt
+target
 
 # OS specific
 .DS_Store
 Thumbs.db
+mill.*
 
 # IDE specific
 .idea/

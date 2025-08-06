@@ -1,0 +1,40 @@
+//| mill-version: 1.0.3
+package build
+
+import mill.*
+import scalalib.*
+import publish.*
+
+object attributes extends ScalaModule with PublishModule {
+  def scalaVersion = "3.3.1"
+
+  def mvnDeps = Seq(
+    mvn"dev.zio::zio-schema:1.7.4",
+    mvn"dev.zio::zio-schema-derivation:1.7.4",
+    mvn"dev.zio::zio-schema-json:1.7.4",
+    mvn"dev.zio::zio-schema-protobuf:1.7.4"
+  )
+
+  object test extends ScalaTests {
+
+    def mvnDeps = Seq(
+      mvn"dev.zio::zio-test:2.0.21",
+      mvn"dev.zio::zio-test-sbt:2.0.21",
+      mvn"dev.zio::zio-test-magnolia:2.0.21"
+    )
+
+    def testFramework = "zio.test.sbt.ZTestFramework"
+  }
+
+  def publishVersion = "0.1.0"
+
+  def pomSettings = PomSettings(
+    description = "Attribute system with ZIO Schema serialization",
+    organization = "com.github.therealcisse",
+    url = "https://github.com/therealcisse/attributes",
+    licenses = Seq(License.MIT),
+    versionControl = VersionControl.github("therealcisse", "attributes"),
+    developers = Seq.empty
+  )
+
+}

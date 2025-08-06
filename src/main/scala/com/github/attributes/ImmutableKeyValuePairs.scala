@@ -6,17 +6,13 @@ import scala.collection.mutable.Map as MutableMap
 abstract class ImmutableKeyValuePairs[K](private val data: Array[Any]) {
   private var hashcode: Int = 0
 
-  final def size: Int = {
-    data.length / 2
-  }
+  final def size: Int = data.length / 2
 
-  final def isEmpty: Boolean = {
-    data.length == 0
-  }
+  final def isEmpty: Boolean = data.length == 0
 
   final def asMap: Map[K, Any] = {
     val result = MutableMap.empty[K, Any]
-    var i = 0
+    var i      = 0
     while (i < data.length) {
       result += (data(i).asInstanceOf[K] -> data(i + 1))
       i += 2
@@ -46,10 +42,10 @@ abstract class ImmutableKeyValuePairs[K](private val data: Array[Any]) {
   override def equals(o: Any): Boolean = {
     if (this eq o.asInstanceOf[AnyRef]) {
       true
-    } else if (!o.isInstanceOf[ImmutableKeyValuePairs[_]]) {
+    } else if (!o.isInstanceOf[ImmutableKeyValuePairs[?]]) {
       false
     } else {
-      val that = o.asInstanceOf[ImmutableKeyValuePairs[_]]
+      val that = o.asInstanceOf[ImmutableKeyValuePairs[?]]
       Arrays.equals(this.data, that.data)
     }
   }
@@ -67,13 +63,14 @@ abstract class ImmutableKeyValuePairs[K](private val data: Array[Any]) {
 
   override def toString: String = {
     val sb = new StringBuilder("{")
-    var i = 0
+    var i  = 0
     while (i < data.length) {
       val value = data(i + 1)
-      val valueStr = value match {
-        case s: String => "\"" + s + "\""
-        case _ => value.toString
-      }
+      val valueStr =
+        value match {
+          case s: String => "\"" + s + "\""
+          case _         => value.toString
+        }
       sb.append(data(i)).append("=").append(valueStr).append(", ")
       i += 2
     }
@@ -84,14 +81,14 @@ abstract class ImmutableKeyValuePairs[K](private val data: Array[Any]) {
     sb.toString
   }
 
-  def getData: Array[Any] = {
-    data
-  }
+  def getData: Array[Any] = data
 }
 
 object ImmutableKeyValuePairs {
 
-  def sortAndFilter[K](data: Array[Any])(implicit ord: Ordering[K]): Array[Any] = {
+  def sortAndFilter[K](data: Array[Any])(
+    implicit ord: Ordering[K]
+  ): Array[Any] = {
     require(data.length % 2 == 0, "You must provide an even number of key/value pair arguments.")
 
     if (data.length == 0) {
@@ -109,10 +106,12 @@ object ImmutableKeyValuePairs {
   }
 
   private def splitAndMerge[K](
-      workArray: Array[Any],
-      beginIndex: Int,
-      endIndex: Int,
-      targetArray: Array[Any], ord: Ordering[K]): Unit = {
+    workArray: Array[Any],
+    beginIndex: Int,
+    endIndex: Int,
+    targetArray: Array[Any],
+    ord: Ordering[K]
+  ): Unit = {
     if (endIndex - beginIndex <= 2) {
       return
     }
@@ -123,21 +122,23 @@ object ImmutableKeyValuePairs {
   }
 
   private def merge[K](
-      sourceArray: Array[Any],
-      beginIndex: Int,
-      middleIndex: Int,
-      endIndex: Int,
-      targetArray: Array[Any], ord: Ordering[K]): Unit = {
-    var leftKeyIndex = beginIndex
+    sourceArray: Array[Any],
+    beginIndex: Int,
+    middleIndex: Int,
+    endIndex: Int,
+    targetArray: Array[Any],
+    ord: Ordering[K]
+  ): Unit = {
+    var leftKeyIndex  = beginIndex
     var rightKeyIndex = middleIndex
 
     var k = beginIndex
     while (k < endIndex) {
-      if (leftKeyIndex < middleIndex - 1 &&
-          (rightKeyIndex >= endIndex - 1 ||
-           ord.compare(
-             sourceArray(leftKeyIndex).asInstanceOf[K],
-             sourceArray(rightKeyIndex).asInstanceOf[K]) <= 0)) {
+      if (
+        leftKeyIndex < middleIndex - 1 &&
+        (rightKeyIndex >= endIndex - 1 ||
+          ord.compare(sourceArray(leftKeyIndex).asInstanceOf[K], sourceArray(rightKeyIndex).asInstanceOf[K]) <= 0)
+      ) {
         targetArray(k) = sourceArray(leftKeyIndex)
         targetArray(k + 1) = sourceArray(leftKeyIndex + 1)
         leftKeyIndex = leftKeyIndex + 2
@@ -152,11 +153,11 @@ object ImmutableKeyValuePairs {
 
   private def dedupe[K](data: Array[Any], ord: Ordering[K]): Array[Any] = {
     var previousKey: Any = null
-    var size = 0
+    var size             = 0
 
     var i = 0
     while (i < data.length) {
-      val key = data(i)
+      val key   = data(i)
       val value = data(i + 1)
 
       if (previousKey != null && ord.compare(key.asInstanceOf[K], previousKey.asInstanceOf[K]) == 0) {
@@ -180,8 +181,8 @@ object ImmutableKeyValuePairs {
     }
   }
 
-  def apply[K](data: Array[Any])(implicit ord: Ordering[K]) = {
-    new ImmutableKeyValuePairs[K](ImmutableKeyValuePairs.sortAndFilter(data)) {}
-  }
+  def apply[K](data: Array[Any])(
+    implicit ord: Ordering[K]
+  ) = new ImmutableKeyValuePairs[K](ImmutableKeyValuePairs.sortAndFilter(data)) {}
 
 }
