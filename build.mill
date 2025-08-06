@@ -9,6 +9,31 @@ import mill.scalalib.scalafmt.*
 object attributes extends ScalaModule with PublishModule with ScalafmtModule {
   def scalaVersion = "3.3.1"
 
+  // Safe compilation options for Scala 3
+  def scalacOptions = Seq(
+    // Language and feature flags
+    "-feature",                    // Warn about language features
+    "-deprecation",               // Warn about deprecated features
+    "-unchecked",                 // Warn about unchecked operations
+    "-language:strictEquality",   // Enable strict equality (multiversal equality)
+    "-Wunused:all",              // Warn about unused imports, variables, etc.
+    "-Wvalue-discard",           // Warn when non-Unit values are discarded
+    "-Wnonunit-statement",       // Warn about non-unit statements
+    
+    // Strict compilation flags
+    "-Yexplicit-nulls",          // Enable explicit nulls for better null safety
+    "-Ysafe-init",               // Check for safe initialization order
+    "-Ycheck-all-patmat",        // Check pattern matching exhaustiveness
+    
+    // Error on warnings for CI/strict builds (uncomment if desired)
+    "-Werror",                 // Treat warnings as errors
+    
+    // Additional safety checks
+    "-Xlint:all",                // Enable all linting warnings
+    "-Ykind-projector",          // Enable kind-projector compatibility
+    "-source:future"             // Enable warnings for future-deprecated features
+  )
+
   def mvnDeps = Seq(
     mvn"dev.zio::zio-schema:1.7.4",
     mvn"dev.zio::zio-schema-derivation:1.7.4",
