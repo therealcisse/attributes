@@ -4,8 +4,9 @@ package build
 import mill.*
 import scalalib.*
 import publish.*
+import mill.scalalib.scalafmt.*
 
-object attributes extends ScalaModule with PublishModule {
+object attributes extends ScalaModule with PublishModule with ScalafmtModule {
   def scalaVersion = "3.3.1"
 
   def mvnDeps = Seq(
